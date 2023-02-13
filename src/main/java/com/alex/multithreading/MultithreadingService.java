@@ -18,6 +18,7 @@ public class MultithreadingService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("Result 1 processing...");
         return CompletableFuture.completedFuture("Result 1");
     }
 
@@ -28,21 +29,22 @@ public class MultithreadingService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("Result 2 processing...");
         return CompletableFuture.completedFuture("Result 2");
     }
 
     @Async
-    public CompletableFuture<Void> doSomething3() throws InterruptedException {
+    public void doSomething3() throws InterruptedException {
         semaphore.acquire();
         try {
+            System.out.println("The counter is : " + counter.get());
             int threadId = counter.incrementAndGet();
             System.out.println("Thread " + threadId + " started");
-            // do some time-consuming operation
             Thread.sleep(2000);
             System.out.println("Thread " + threadId + " finished");
         } finally {
             semaphore.release();
         }
-        return CompletableFuture.completedFuture(null);
     }
+
 }

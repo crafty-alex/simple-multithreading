@@ -14,16 +14,16 @@ public class MultithreadingController {
     private MultithreadingService service;
 
     @GetMapping("/do-something")
-    public CompletableFuture<String> doSomething() throws InterruptedException, ExecutionException {
+    public CompletableFuture<String> doSomething() throws InterruptedException {
         var result1 = service.doSomething1();
         var result2 = service.doSomething2();
-        System.out.println("Hi! I am being displayed before result1 and result2 are received");
+        System.out.println("Hi! I am being displayed before Result 1 and Result 2 are received");
 
         service.doSomething3();
         service.doSomething3();
         service.doSomething3();
         service.doSomething3();
-        System.out.println("Hi! I am being displayed before result3 is received");
+        System.out.println("Hi! I am being displayed before Result 3 is received");
 
         return result1.thenCombine(result2, (r1, r2) -> r1 + " and " + r2);
     }
