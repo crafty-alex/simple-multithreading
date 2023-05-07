@@ -3,7 +3,9 @@ package com.alex.multithreading;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
+import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -26,5 +28,27 @@ public class MultithreadingController {
         System.out.println("Hi! I am being displayed before Result 3 is received");
 
         return result1.thenCombine(result2, (r1, r2) -> r1 + " and " + r2);
+    }
+
+    @GetMapping("/do-request-1")
+    public CompletableFuture<Void> sendAsyncRequest1() {
+        CompletableFuture<String> response = service.sendAsyncRequest("https://jsonplaceholder.typicode.com/todos/1");
+        return response.thenAccept(result -> System.out.println("Result: " + result)); // prints the string created in the console
+    }
+
+    @GetMapping("/do-request-2")
+    public CompletableFuture<String> sendAsyncRequest2() {
+        CompletableFuture<String> response = service.sendAsyncRequest("https://jsonplaceholder.typicode.com/todos/1");
+        return response.thenApply(result -> "Result: " + result); // returns the string created
+    }
+
+    @GetMapping("/do-request-3")
+    public CompletableFuture<String> sendAsyncRequest3() {
+        return service.sendAsyncRequest("https://jsonplaceholder.typicode.com/todos/1"); // returns directly the response from API
+    }
+
+    @GetMapping("/do-request-4")
+    public Mono<String> sendAsyncRequest4() {
+        return service.sendAsyncRequestWebClient("https://jsonplaceholder.typicode.com/todos/1");
     }
 }

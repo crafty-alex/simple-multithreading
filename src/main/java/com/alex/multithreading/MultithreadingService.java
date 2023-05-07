@@ -2,6 +2,14 @@ package com.alex.multithreading;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -45,6 +53,29 @@ public class MultithreadingService {
         } finally {
             semaphore.release();
         }
+    }
+
+
+    @Async
+    public CompletableFuture<String> sendAsyncRequest(String url) {
+        HttpClient httpClient = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .timeout(Duration.ofSeconds(60))
+                .uri(URI.create(url))
+                .build();
+
+        return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body);
+    }
+
+    public Mono<String> sendAsyncRequestWebClient(String url) {
+        WebClient webClient = WebClient.create();
+        return webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(String.class);
     }
 
 }
