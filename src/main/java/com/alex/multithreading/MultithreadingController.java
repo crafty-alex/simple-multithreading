@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 @RestController
 public class MultithreadingController {
@@ -50,5 +51,14 @@ public class MultithreadingController {
     @GetMapping("/do-request-4")
     public Mono<String> sendAsyncRequest4() {
         return service.sendAsyncRequestWebClient("https://jsonplaceholder.typicode.com/todos/1");
+    }
+
+    @GetMapping("/do-request-5")
+    public void sendAsyncRequest5() throws ExecutionException, InterruptedException {
+        CompletableFuture<Long> asyncFactorialFuture = service.calculateFactorialAsync(5);
+        asyncFactorialFuture.thenAccept(factorial -> System.out.println("@Async Factorial: " + factorial));
+
+        Future<Long> executorServiceFactorialFuture = service.calculateFactorialWithExecutorService(5);
+        System.out.println("ExecutorService Factorial: " + executorServiceFactorialFuture.get());
     }
 }

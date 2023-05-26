@@ -10,8 +10,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class MultithreadingService {
@@ -76,6 +75,29 @@ public class MultithreadingService {
                 .uri(url)
                 .retrieve()
                 .bodyToMono(String.class);
+    }
+
+
+    @Async
+    public CompletableFuture<Long> calculateFactorialAsync(int number) throws InterruptedException {
+        System.out.println("Calling @Async method...");
+        Thread.sleep(3000);
+        long factorial = calculateFactorial(number);
+        return CompletableFuture.completedFuture(factorial);
+    }
+
+    public Future<Long> calculateFactorialWithExecutorService(int number) throws InterruptedException {
+        System.out.println("Calling ExecutoService method...");
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        return executorService.submit(() -> calculateFactorial(number));
+    }
+
+    private long calculateFactorial(int number) {
+        long factorial = 1;
+        for (int i = 1; i <= number; i++) {
+            factorial *= i;
+        }
+        return factorial;
     }
 
 }
