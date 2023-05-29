@@ -100,4 +100,44 @@ public class MultithreadingService {
         return factorial;
     }
 
+    public void processTasksWithExecutorService() {
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+
+        for (int i = 0; i < 10; i++) {
+            Runnable worker = new WorkerThread("" + i);
+            executor.execute(worker);
+        }
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {   }
+        System.out.println("Finished all threads");
+    }
+
+    static class WorkerThread implements Runnable {                 // InnerClass static :
+                                                                    // OuterClass.InnerClass nestedObject = new OuterClass.InnerClass();
+                                                                    // InnerClass not static :
+                                                                    // OuterClass outerObject = new OuterClass()
+                                                                    //OuterClass.InnerClass innerObject = outerObject.new InnerClass();
+
+        private String message;
+
+        public WorkerThread(String message) {
+            this.message = message;
+        }
+
+        public void run() {
+            System.out.println(Thread.currentThread().getName() + " (Start) message = " + message);
+            processmessage();
+            System.out.println(Thread.currentThread().getName() + " (End)");
+        }
+
+        private void processmessage() {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

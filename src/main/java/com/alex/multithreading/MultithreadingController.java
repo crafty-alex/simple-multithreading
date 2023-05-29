@@ -61,4 +61,9 @@ public class MultithreadingController {
         Future<Long> executorServiceFactorialFuture = service.calculateFactorialWithExecutorService(5);
         System.out.println("ExecutorService Factorial: " + executorServiceFactorialFuture.get());
     }
+
+    @GetMapping("/do-request-6")
+    public void sendAsyncRequest6() throws ExecutionException, InterruptedException {
+       service.processTasksWithExecutorService();
+    }
 }
