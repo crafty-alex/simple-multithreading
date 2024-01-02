@@ -1,3 +1,5 @@
+package com.alex.multithreading;
+
 public class CalorieCounter {
 
     private int totalCalories = 0;
