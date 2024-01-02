@@ -66,4 +66,15 @@ public class MultithreadingController {
     public void sendAsyncRequest6() throws ExecutionException, InterruptedException {
        service.processTasksWithExecutorService();
     }
+
+     @GetMapping("/eat-calories")
+    public void calories() throws ExecutionException, InterruptedException {
+        CalorieCounter counter = new CalorieCounter();
+
+        Thread eatingThread = new Thread(() -> counter.consumeCalories("donuts", 1500));
+        Thread exerciseThread = new Thread(() -> counter.burnCalories("jogging", 600));
+
+        eatingThread.start();
+        exerciseThread.start();
+    }
 }
